@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity >=0.7.0 <0.9.0;
+
+contract StudentManagement {
+    
+    struct Student {
+        int studId;
+        string name;
+        string department;
+    }
+
+    Student[] private students;
+
+    // Function to add a new student
+    function addStudent(int studId, string memory name, string memory department) public {
+        Student memory newStudent = Student(studId, name, department);
+        students.push(newStudent);
+    }
+
+    // Function to retrieve a student's details by their ID
+    function getStudent(int studId) public view returns (string memory, string memory) {
+        for (uint i = 0; i < students.length; i++) {
+            Student memory student = students[i];
+            if (student.studId == studId) {
+                return (student.name, student.department);
+            }
+        }
+        return ("Name Not Found", "Department Not Found");
+    }
+
+    // Function to update an existing student's name and department by their ID
+    function updateStudent(int studId, string memory newName, string memory newDepartment) public returns (bool) {
+        for (uint i = 0; i < students.length; i++) {
+            if (students[i].studId == studId) {
+                students[i].name = newName;
+                students[i].department = newDepartment;
+                return true;  // Update successful
+            }
+        }
+        return false;  // Student not found
+    }
+
+    // Fallback function to add a default student if contract receives unexpected data
+    fallback() external {
+        students.push(Student(7, "XYZ", "Mechanical"));
+    }
+}
